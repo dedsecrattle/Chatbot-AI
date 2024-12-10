@@ -1,52 +1,67 @@
 import { useState, useEffect, useRef } from "react";
-import { sendMessage, delay } from "../api/chat.ts";
+import { sendMessage, delay } from "../api/chat";
 import ChatBubble from "./ChatBubble";
 import MessageInput from "./MessageInput";
+import ChatHeader from "./ChatHeader";
 import { Card } from "@/components/ui/card";
-import ChatHeader from "./ChatHeader.tsx";
-import botAvatar from "../assets/bot.png";
+
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
 
 const ChatWindow = () => {
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    []
-  );
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-
-  //Ref to scroll into view
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
 
-  //Handles sending message to the Bot
-  const handleSendMessage = async (content: string) => {
-    const userMessage = { role: "user", content };
-    setMessages((prev) => [...prev, userMessage]);
-    setIsTyping(true);
-
-    // Simulating Bot typing
-    await delay(2000);
-
-    // Making API call to send message to the Bot
-    const response = await sendMessage(content);
-
-    if (response) {
-      const botMessage = {
-        role: "assistant",
-        content: response?.answer,
-      };
-      setMessages((prev) => [...prev, botMessage]);
+  const speak = (text: string) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
     } else {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Sorry, I cannot answer this question." },
-      ]);
+      console.error("Speech synthesis is not supported in this browser.");
     }
+  };
 
-    setIsTyping(false);
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const addMessage = (newMessage: Message) => {
+    setMessages((prev) => [...prev, newMessage]);
+  };
+
+  const handleBotResponse = async (userContent: string) => {
+    try {
+      await delay(2000); // Simulate delay for typing effect
+      const response = await sendMessage(userContent);
+
+      const botMessage: Message = {
+        role: "assistant",
+        content: response?.answer || "Sorry, I cannot answer this question.",
+      };
+
+      addMessage(botMessage);
+      speak(botMessage.content);
+    } catch (error) {
+      const errorMessage = "An error occurred. Please try again.";
+      addMessage({ role: "assistant", content: errorMessage });
+      speak(errorMessage);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleSendMessage = async (content: string) => {
+    const userMessage: Message = { role: "user", content };
+    addMessage(userMessage);
+    setIsTyping(true);
+    await handleBotResponse(content);
   };
 
   useEffect(() => {
-    if (endOfMessagesRef.current) {
-      endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollToBottom();
   }, [messages, isTyping]);
 
   return (
@@ -58,18 +73,16 @@ const ChatWindow = () => {
         ))}
         {isTyping && (
           <div className="text-left my-2">
-            <img src={botAvatar} />
             <div className="inline-block p-2 rounded-lg bg-gray-300">
-              <span className="animate-pulse">
-                Typing<span className="dots">...</span>
-              </span>
+              <span className="animate-pulse">Typing...</span>
             </div>
           </div>
         )}
-        {/* Invisible element to scroll into view */}
         <div ref={endOfMessagesRef} />
       </div>
-      <MessageInput onSendMessage={handleSendMessage} />
+      <div className="flex gap-2">
+        <MessageInput onSendMessage={handleSendMessage} />
+      </div>
     </Card>
   );
 };

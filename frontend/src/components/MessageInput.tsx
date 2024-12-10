@@ -27,7 +27,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 w-full">
       <Input
         value={input}
         onChange={(e) => setInput(e.target.value)}
