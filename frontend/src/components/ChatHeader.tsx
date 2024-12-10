@@ -1,5 +1,6 @@
 import botavatar from "../assets/bot.png";
 
+// This is a simple component that displays the chat header.
 const ChatHeader = () => {
   return (
     <div className="flex h-14 items-center justify-center gap-5 mb-4">

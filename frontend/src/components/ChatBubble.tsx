@@ -7,6 +7,7 @@ interface ChatBubbleProps {
   content: string;
 }
 
+// ChatBubble component to display chat bubbles
 const ChatBubble: React.FC<ChatBubbleProps> = ({ role, content }) => {
   const isUser = role === "user";
 

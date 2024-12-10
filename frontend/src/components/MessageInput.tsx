@@ -10,6 +10,7 @@ interface MessageInputProps {
 const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const [input, setInput] = useState("");
 
+  // Handles sending message to the Bot
   const handleSend = () => {
     if (input.trim()) {
       onSendMessage(input);
@@ -17,6 +18,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     }
   };
 
+  //Handles sending message to the Bot on pressing Enter
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
