@@ -3,6 +3,7 @@ import { sendMessage, delay } from "../api/chat.ts";
 import ChatBubble from "./ChatBubble";
 import MessageInput from "./MessageInput";
 import { Card } from "@/components/ui/card";
+import ChatHeader from "./ChatHeader.tsx";
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
@@ -45,6 +46,7 @@ const ChatWindow = () => {
 
   return (
     <Card className="p-4 max-w-xl mx-auto mt-10">
+      <ChatHeader />
       <div className="h-96 overflow-y-auto mb-4 bg-gray-50 p-2 rounded-md">
         {messages.map((msg, index) => (
           <ChatBubble key={index} role={msg.role} content={msg.content} />

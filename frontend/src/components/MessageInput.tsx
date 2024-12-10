@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { IoSend } from "react-icons/io5";
 
 interface MessageInputProps {
   onSendMessage: (message: string) => void;
@@ -31,7 +32,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
         placeholder="Type your question..."
         onKeyDown={handleKeyDown}
       />
-      <Button onClick={handleSend}>Send</Button>
+      <Button onClick={handleSend}>
+        <IoSend />
+        Send
+      </Button>
     </div>
   );
 };
