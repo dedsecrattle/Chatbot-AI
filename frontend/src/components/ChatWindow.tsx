@@ -4,6 +4,7 @@ import ChatBubble from "./ChatBubble";
 import MessageInput from "./MessageInput";
 import ChatHeader from "./ChatHeader";
 import { Card } from "@/components/ui/card";
+import "regenerator-runtime";
 
 interface Message {
   role: "user" | "assistant";
@@ -54,6 +55,7 @@ const ChatWindow = () => {
   };
 
   const handleSendMessage = async (content: string) => {
+    if (!content.trim()) return;
     const userMessage: Message = { role: "user", content };
     addMessage(userMessage);
     setIsTyping(true);
@@ -80,7 +82,7 @@ const ChatWindow = () => {
         )}
         <div ref={endOfMessagesRef} />
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <MessageInput onSendMessage={handleSendMessage} />
       </div>
     </Card>
