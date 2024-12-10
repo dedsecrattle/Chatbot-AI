@@ -86,7 +86,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
       <Button
         onClick={listening ? stopVoiceRecognition : startVoiceRecognition}
         className={`px-4 py-2 rounded-md ${
-          listening ? "bg-red-500 text-white" : "bg-blue-500 text-white"
+          listening ? "bg-red-500 text-white" : "bg-black text-white"
         }`}
       >
         <FaMicrophone />
